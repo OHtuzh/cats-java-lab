@@ -1,2 +1,5 @@
 rootProject.name = 'cats'
-include 'service', 'data-access-layer'
+include 'data-access-layer'
+include 'service'
+include 'http_app'
+

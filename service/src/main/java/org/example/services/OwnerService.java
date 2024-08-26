@@ -1,34 +1,15 @@
 package org.example.services;
 
-import org.example.dao.OwnerDao;
-import org.example.models.owner.Owner;
+import org.example.dto.OwnerDto;
 
-import java.util.List;
+import java.time.LocalDate;
 
-public class OwnerService {
-    private final OwnerDao ownerDao;
+public interface OwnerService {
+    OwnerDto createOwner(String name, LocalDate birthday);
 
-    public OwnerService(OwnerDao ownerDao) {
-        this.ownerDao = ownerDao;
-    }
+    OwnerDto getOwner(Integer id);
 
-    public Owner findOwner(int id) {
-        return ownerDao.findById(id);
-    }
+    void deleteOwner(Integer id);
 
-    public void saveOwner(Owner owner) {
-        ownerDao.save(owner);
-    }
-
-    public void deleteOwner(Owner owner) {
-        ownerDao.delete(owner);
-    }
-
-    public void updateOwner(Owner owner) {
-        ownerDao.update(owner);
-    }
-
-    public List<Owner> findAllOwners() {
-        return ownerDao.findAll();
-    }
+    void addCat(Integer id, Integer catId);
 }

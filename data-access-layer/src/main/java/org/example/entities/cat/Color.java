@@ -1,4 +1,4 @@
-package org.example.models.cat;
+package org.example.entities.cat;
 
 public enum Color {
     WHITE, BLACK, GRAY, ORANGE

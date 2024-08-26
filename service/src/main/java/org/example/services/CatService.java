@@ -1,34 +1,19 @@
 package org.example.services;
 
-import org.example.dao.CatDao;
-import org.example.models.cat.Cat;
+import org.example.dto.CatDto;
+import org.example.entities.cat.Color;
 
+import java.time.LocalDate;
 import java.util.List;
 
-public class CatService {
-    private final CatDao catDao;
+public interface CatService {
+    CatDto createCat(String name, Integer ownerId, LocalDate birthday, String breed, Color color);
 
-    public CatService(CatDao catDao) {
-        this.catDao = catDao;
-    }
+    CatDto getCat(Integer id);
 
-    public Cat findCat(int id) {
-        return catDao.findById(id);
-    }
+    void deleteCat(Integer id);
 
-    public void saveCat(Cat cat) {
-        catDao.save(cat);
-    }
+    void addFriend(Integer catId, Integer friendId);
 
-    public void deleteCat(Cat cat) {
-        catDao.delete(cat);
-    }
-
-    public void updateCat(Cat cat) {
-        catDao.update(cat);
-    }
-
-    public List<Cat> findAllCats() {
-        return catDao.findAll();
-    }
+    List<CatDto> getByParams(List<String> name, List<Integer> id, List<LocalDate> birthDay, List<Color> color, List<String> breed);
 }
