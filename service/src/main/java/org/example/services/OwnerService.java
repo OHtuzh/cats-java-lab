@@ -12,4 +12,6 @@ public interface OwnerService {
     void deleteOwner(Integer id);
 
     void addCat(Integer id, Integer catId);
+
+    OwnerDto getCurrentOwner();
 }

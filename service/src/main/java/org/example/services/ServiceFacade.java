@@ -11,12 +11,16 @@ import org.example.dto.OwnerDto;
 import org.example.entities.cat.Cat;
 import org.example.entities.cat.Color;
 import org.example.entities.owner.Owner;
+import org.example.model.CatsAuthentication;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -52,6 +56,30 @@ public class ServiceFacade implements CommonService {
         cat.addFriend(friend);
         catRepository.save(cat);
         cat.addFriend(friend);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public OwnerDto getCurrentOwner() {
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .map(CatsAuthentication.class::cast)
+                .map(CatsAuthentication::getUuid)
+                .flatMap(ownerRepository::findById)
+                .map(OwnerConversion::castToOwnerDto)
+                .orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public void addFriendCheckUser(Integer leftCatUuid, Integer rightCatUuid) {
+        if (getCurrentOwner().getCats()
+                .stream()
+                .map(CatDto::getId)
+                .toList()
+                .contains(leftCatUuid)) {
+            throw new RuntimeException("Not found cat %d".formatted(leftCatUuid));
+        }
+        addFriend(leftCatUuid, rightCatUuid);
     }
 
     @Override
@@ -90,6 +118,46 @@ public class ServiceFacade implements CommonService {
         Cat cat = getCatById(catId);
         owner.addCat(cat);
         catRepository.save(cat);
+    }
+
+    @Override
+    public CatDto createCatCheckUser(String name, Integer catOwnerUuid, LocalDate birthDay, String breed, Color catColor) {
+        if (!getCurrentOwner().getId().equals(catOwnerUuid)) {
+            throw new RuntimeException("Not found owner %d".formatted(catOwnerUuid));
+        }
+        return createCat(name, catOwnerUuid, birthDay, breed, catColor);
+    }
+
+    @Override
+    public CatDto readCatCheckUser(Integer catUuid) {
+        if (getCurrentOwner().getCats()
+                .stream()
+                .map(CatDto::getId)
+                .toList()
+                .contains(catUuid)) {
+            throw new RuntimeException("Not found cat %d".formatted(catUuid));
+        }
+        return getCat(catUuid);
+    }
+
+    @Override
+    public void deleteCatCheckUser(Integer catUuid) {
+        if (getCurrentOwner().getCats()
+                .stream()
+                .map(CatDto::getId)
+                .toList()
+                .contains(catUuid)) {
+            throw new RuntimeException("Not found cat %d".formatted(catUuid));
+        }
+        deleteCat(catUuid);
+    }
+
+    @Override
+    public List<CatDto> getByParamsCheckUser(List<String> name, List<Integer> uuid, List<LocalDate> birthDay, List<Color> color, List<String> breed) {
+        return getByParams(name, uuid, birthDay, color, breed)
+                .stream()
+                .filter(catDto -> catDto.getOwnerId().equals(getCurrentOwner().getId()))
+                .toList();
     }
 
     private Cat getCatById(Integer catId) {
