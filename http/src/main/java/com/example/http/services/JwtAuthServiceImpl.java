@@ -1,18 +1,19 @@
 package com.example.http.services;
 
-import com.example.http.model.Owner;
-import com.example.http.model.User;
-import com.example.http.model.Roles;
-import com.example.http.model.UserDto;
+import com.example.http.dto.OwnerDto;
+import com.example.http.model.*;
 import com.example.http.repositories.OwnerRepository;
 import com.example.http.repositories.UserRepository;
 import com.example.http.requests.JwtCreateCatOwnerRequest;
 import com.example.http.requests.JwtRequest;
 import com.example.http.requests.JwtResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -56,5 +57,14 @@ public class JwtAuthServiceImpl implements JwtAuthService {
                 .catOwnerUuid(user.getCatOwner().getId())
                 .roles(user.getRoles())
                 .build();
+    }
+
+    public Owner getCurrentOwner() {
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .map(CatsAuthentication.class::cast)
+                .map(CatsAuthentication::getUuid)
+                .flatMap(catOwnerRepository::findById)
+                .orElseThrow(RuntimeException::new);
     }
 }

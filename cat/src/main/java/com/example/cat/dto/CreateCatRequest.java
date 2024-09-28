@@ -19,4 +19,5 @@ public class CreateCatRequest {
     private String breed;
     @NotNull
     private Color color;
+    private Integer id;
 }

@@ -20,4 +20,6 @@ public class CreateCatRequest {
     @NotNull
     private Color color;
 
+    private Integer id;
+
 }

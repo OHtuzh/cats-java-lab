@@ -17,11 +17,12 @@ import org.springframework.kafka.support.KafkaHeaders;
 public class CatKafkaConsumerService {
 
     private final CatService catService;
+    private final CatCheckUserService catCheckUserService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @KafkaListener(topics = "cat-create", groupId = "cat_group")
     public void processCreateCat(CreateCatRequest request, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        CatDto catDto = catService.createCat(request.getName(), request.getOwnerId(), request.getBirthday(), request.getBreed(), request.getColor());
+        CatDto catDto = catCheckUserService.createCatCheckUser(request.getName(), request.getOwnerId(), request.getBirthday(), request.getBreed(), request.getColor(), request.getId());
         kafkaTemplate.send("cat-create-response", catDto);  // Отправляем ответ
     }
 
