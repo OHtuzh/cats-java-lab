@@ -12,6 +12,30 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/cat" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/cat" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/http" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/http" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/owner" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/owner" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
